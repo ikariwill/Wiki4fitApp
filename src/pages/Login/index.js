@@ -17,17 +17,15 @@ export default function Login({ navigation }) {
   const { register, setValue, handleSubmit } = useForm();
 
   useEffect(() => {
-    async function userIsLogged() {
+    async function skipLogin() {
       const user = await AsyncStorage.getItem("@wiki4fit:user");
 
-      if (!user) return false;
+      if (!user) return;
 
-      return true;
+      navigation.navigate("Home", { user: JSON.parse(user) });
     }
 
-    if (userIsLogged()) {
-      navigation.navigate("Home");
-    }
+    skipLogin();
   }, []);
 
   function onSubmit(data) {
@@ -35,22 +33,26 @@ export default function Login({ navigation }) {
   }
 
   async function login({ email, senha }) {
-    const loginUser = await api.post("/public/login/", { email, senha });
+    try {
+      const loginUser = await api.post("/public/login/", { email, senha });
 
-    const { code, message } = loginUser.data;
+      const { code, message } = loginUser.data;
 
-    if (code === 1) {
-      Alert.alert("Falha no login", message);
+      if (code === 1) {
+        Alert.alert("Falha no login", message);
 
-      return;
+        return;
+      }
+
+      await AsyncStorage.setItem(
+        "@wiki4fit:user",
+        JSON.stringify(loginUser.data)
+      );
+
+      navigation.navigate("Home", { user: loginUser.data });
+    } catch (error) {
+      Alert.alert("Erro ao acessar o servidor", error);
     }
-
-    await AsyncStorage.setItem(
-      "@wiki4fit:user",
-      JSON.stringify(loginUser.data)
-    );
-
-    navigation.navigate("Home");
   }
 
   return (

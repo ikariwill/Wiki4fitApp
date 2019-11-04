@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, AsyncStorage } from "react-native";
+import { AsyncStorage } from "react-native";
 
-// import { Container } from './styles';
+import { Container, Button, ButtonText } from "../Login/styles";
+import { Title } from "./styles";
 
-export default function Home() {
+export default function Home({ navigation }) {
   const [user, setUser] = useState([]);
   useEffect(() => {
-    async function getUser() {
-      const userLogged = await AsyncStorage.getItem("@wiki4fit:user");
+    console.log(navigation.getParam("user"));
+    const loggedUser = navigation.getParam("user").data;
 
-      setUser(userLogged);
-    }
-
-    getUser();
+    setUser(loggedUser);
   }, []);
 
+  async function handleLogout() {
+    await AsyncStorage.removeItem("@wiki4fit:user");
+
+    navigation.navigate("Login");
+  }
+
   return (
-    <View>
-      <Text> {user} </Text>
-    </View>
+    <Container>
+      <Title>Bem vindo {user.apelido} </Title>
+      <Button onPress={handleLogout}>
+        <ButtonText>Logout</ButtonText>
+      </Button>
+    </Container>
   );
 }
