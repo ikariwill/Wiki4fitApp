@@ -36,6 +36,7 @@ export const Input = styled.TextInput.attrs({
 export const Button = styled.TouchableOpacity`
   padding: 10px 16px;
   background: #f58421;
+  margin-bottom: 10px;
   align-items: center;
   align-self: center;
   border-radius: 4px;
