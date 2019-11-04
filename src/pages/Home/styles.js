@@ -16,13 +16,13 @@ export const Icon = styled.Image`
   height: 150px;
 `;
 
-export const Title = styled.Text`
+export const Welcome = styled.Text`
   font-size: 20px;
   color: #fff;
   margin-bottom: 10px;
 `;
 
-export const TreinoTitle = styled.Text`
+export const Title = styled.Text`
   font-size: 20px;
   color: #fff;
   margin-bottom: 5px;
@@ -33,6 +33,8 @@ export const TreinoTitle = styled.Text`
 export const List = styled.FlatList.attrs({
   contentContainerStyle: { paddingHorizontal: 20 },
   showsVerticalScrollIndicator: false
-})`
-  margin-top: 20px;
+})``;
+
+export const VideoContainer = styled.View`
+  flex: 1;
 `;

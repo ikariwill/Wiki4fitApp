@@ -1,5 +1,6 @@
 import React from "react";
-import { Linking } from "react-native";
+
+import * as WebBrowser from "expo-web-browser";
 
 import {
   Container,
@@ -17,6 +18,15 @@ export default function Novidades({ data, navigation }) {
       ? "default.png"
       : data.imagem_id;
 
+  async function openInAppBrowser(url) {
+    await WebBrowser.openBrowserAsync(url, {
+      toolbarColor: "#fdb94e",
+      showTitle: true,
+      controlsColor: "#fdb94e",
+      collapseToolbar: true
+    });
+  }
+
   return (
     <Container>
       <Image
@@ -27,7 +37,7 @@ export default function Novidades({ data, navigation }) {
       <Title>{data.titulo}</Title>
       <Description>{data.mensagem}</Description>
       {data.link ? (
-        <Button onPress={() => Linking.openURL(data.link)}>
+        <Button onPress={() => openInAppBrowser(data.link)}>
           <ButtonText>Acessar</ButtonText>
         </Button>
       ) : (

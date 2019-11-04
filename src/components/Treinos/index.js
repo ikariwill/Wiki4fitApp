@@ -3,6 +3,8 @@ import format from "date-fns/format";
 
 import { Container, Title, Infos, Goal, Calories, Period } from "./styles";
 
+import Sessoes from "../Sessoes";
+
 export default function Treinos({ navigation, data }) {
   const startDate = format(
     new Date(data.dt_inicio.split(" ")[0]),
@@ -12,7 +14,9 @@ export default function Treinos({ navigation, data }) {
 
   return (
     <Container>
-      <Title>{data.nome}</Title>
+      <Title>
+        {data.nome} {data.id}
+      </Title>
       <Period>
         De {startDate} a {endDate}
       </Period>
@@ -20,6 +24,7 @@ export default function Treinos({ navigation, data }) {
         <Goal>{data.objetivo}</Goal>
         <Calories>{data.gasto_calorico} calorias</Calories>
       </Infos>
+      <Sessoes navigation={navigation} id={data.id}></Sessoes>
     </Container>
   );
 }

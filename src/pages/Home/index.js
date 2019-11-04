@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { AsyncStorage, ScrollView } from "react-native";
 
+import { Video } from "expo-av";
+import VideoPlayer from "expo-video-player";
+
 import { Button, ButtonText } from "../Login/styles";
-import { Container, Title, List, Icon, TreinoTitle } from "./styles";
+import {
+  Container,
+  Title,
+  List,
+  Icon,
+  Welcome,
+  VideoContainer
+} from "./styles";
 
 import api from "../../services/api";
 
@@ -11,23 +21,28 @@ import Treinos from "../../components/Treinos";
 
 export default function Home({ navigation }) {
   const [user, setUser] = useState([]);
-  const [userIcon, setUserIcon] = useState(
-    "https://wiki4fit.com.br/assets/global/img/boneco.png"
-  );
   const [unidades, setUnidades] = useState([]);
   const [treinos, setTreinos] = useState([]);
   const [novidades, setNovidades] = useState([]);
 
+  const [userIcon, setUserIcon] = useState(
+    "https://wiki4fit.com.br/assets/global/img/boneco.png"
+  );
+
   useEffect(() => {
     const loggedUser = navigation.getParam("user").data;
+    const options = {
+      headers: {
+        email: loggedUser.email,
+        senha: loggedUser.senha
+      }
+    };
 
-    async function getNews() {
-      const response = await api.get(`/private/novidades/unidade/3`, {
-        headers: {
-          email: loggedUser.email,
-          senha: loggedUser.senha
-        }
-      });
+    async function getNews(unidadeId) {
+      const response = await api.get(
+        `/private/novidades/unidade/${unidadeId}`,
+        options
+      );
 
       const news = response.data;
 
@@ -35,12 +50,7 @@ export default function Home({ navigation }) {
     }
 
     async function getUnidades() {
-      const response = await api.get(`/private/usuario/unidades`, {
-        headers: {
-          email: loggedUser.email,
-          senha: loggedUser.senha
-        }
-      });
+      const response = await api.get(`/private/usuario/unidades`, options);
 
       const unidades = response.data;
 
@@ -51,18 +61,18 @@ export default function Home({ navigation }) {
       setUnidades(unidades.data[0]);
 
       getTreinos(unidades.data[0].id);
+      getNews(unidades.data[0].cliente_unidade_id);
     }
 
     async function getTreinos(userId) {
-      const response = await api.get(`/private/treinos/usuario/${userId}`, {
-        headers: {
-          email: loggedUser.email,
-          senha: loggedUser.senha
-        }
-      });
+      const response = await api.get(
+        `/private/treinos/usuario/${userId}`,
+        options
+      );
 
       const treinos = response.data;
-      console.log(treinos);
+
+      const treinosId = treinos.data.map(treino => treino.id);
 
       setTreinos(treinos.data);
     }
@@ -88,10 +98,10 @@ export default function Home({ navigation }) {
             uri: userIcon
           }}
         />
-        <Title>
+        <Welcome>
           Bem vind{unidades.sexo === "F" ? "a" : "o"} {user.apelido}
-        </Title>
-        <TreinoTitle>Seus Treinos</TreinoTitle>
+        </Welcome>
+        <Title>Seus Treinos</Title>
         {treinos.map(treino => (
           <Treinos
             key={treino.id}
@@ -100,6 +110,25 @@ export default function Home({ navigation }) {
           ></Treinos>
         ))}
 
+        {/* <VideoContainer>
+          <VideoPlayer
+            videoProps={{
+              shouldPlay: true,
+              resizeMode: Video.RESIZE_MODE_CONTAIN,
+              source: {
+                uri: "https://wiki4fit.com.br/videos/1/536380.mp4"
+              }
+            }}
+            inFullscreen={true}
+            videoBackground="transparent"
+            height={250}
+            isLooping={true}
+            isMuted={true}
+            showFullscreenButton={true}
+          />
+        </VideoContainer> */}
+
+        <Title>Feed</Title>
         <List
           keyboardShouldPersistTaps="handled"
           data={novidades}
