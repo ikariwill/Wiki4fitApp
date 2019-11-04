@@ -3,6 +3,7 @@ import useForm from "react-hook-form";
 import {
   Alert,
   Keyboard,
+  ImageBackground,
   TouchableWithoutFeedback,
   AsyncStorage
 } from "react-native";
@@ -12,6 +13,7 @@ import api from "../../services/api";
 import { Container, Logo, Form, Input, Button, ButtonText } from "./styles";
 
 import logo from "../../assets/logo.png";
+import background from "../../assets/background.png";
 
 export default function Login({ navigation }) {
   const { register, setValue, handleSubmit } = useForm();
@@ -57,31 +59,42 @@ export default function Login({ navigation }) {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <Container>
-        <Logo source={logo} />
-        <Form>
-          <Input
-            ref={register({ name: "email" }, { required: "Digite seu email" })}
-            onChangeText={text => setValue("email", text, true)}
-            autoCapitalize="none"
-            autoCompleteType="email"
-            autoCorrect={false}
-            placeholder="Email"
-          />
-          <Input
-            ref={register({ name: "senha" }, { required: "Digite sua senha" })}
-            onChangeText={text => setValue("senha", text, true)}
-            autoCapitalize="none"
-            autoCompleteType="password"
-            secureTextEntry={true}
-            autoCorrect={false}
-            placeholder="Senha"
-          />
-          <Button onPress={handleSubmit(onSubmit)}>
-            <ButtonText>Entrar</ButtonText>
-          </Button>
-        </Form>
-      </Container>
+      <ImageBackground
+        style={{ width: "100%", height: "100%" }}
+        source={background}
+      >
+        <Container>
+          <Logo source={logo} />
+          <Form>
+            <Input
+              ref={register(
+                { name: "email" },
+                { required: "Digite seu email" }
+              )}
+              onChangeText={text => setValue("email", text, true)}
+              autoCapitalize="none"
+              autoCompleteType="email"
+              autoCorrect={false}
+              placeholder="Email"
+            />
+            <Input
+              ref={register(
+                { name: "senha" },
+                { required: "Digite sua senha" }
+              )}
+              onChangeText={text => setValue("senha", text, true)}
+              autoCapitalize="none"
+              autoCompleteType="password"
+              secureTextEntry={true}
+              autoCorrect={false}
+              placeholder="Senha"
+            />
+            <Button onPress={handleSubmit(onSubmit)}>
+              <ButtonText>Entrar</ButtonText>
+            </Button>
+          </Form>
+        </Container>
+      </ImageBackground>
     </TouchableWithoutFeedback>
   );
 }

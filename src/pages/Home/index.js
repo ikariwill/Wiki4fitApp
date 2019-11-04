@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { AsyncStorage } from "react-native";
 
-import { Container, Button, ButtonText } from "../Login/styles";
-import { Title } from "./styles";
+import { Button, ButtonText } from "../Login/styles";
+import { Container, Title } from "./styles";
 
 export default function Home({ navigation }) {
   const [user, setUser] = useState([]);
