@@ -1,18 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { AsyncStorage, ScrollView } from "react-native";
-
-import { Video } from "expo-av";
-import VideoPlayer from "expo-video-player";
+import { AsyncStorage, ScrollView, FlatList, View } from "react-native";
 
 import { Button, ButtonText } from "../Login/styles";
-import {
-  Container,
-  Title,
-  List,
-  Icon,
-  Welcome,
-  VideoContainer
-} from "./styles";
+import { Container, Title, List, Icon, Welcome } from "./styles";
 
 import api from "../../services/api";
 
@@ -50,7 +40,7 @@ export default function Home({ navigation }) {
     }
 
     async function getUnidades() {
-      const response = await api.get(`/private/usuario/unidades`, options);
+      const response = await api.get("/private/usuario/unidades", options);
 
       const unidades = response.data;
 
@@ -71,8 +61,6 @@ export default function Home({ navigation }) {
       );
 
       const treinos = response.data;
-
-      const treinosId = treinos.data.map(treino => treino.id);
 
       setTreinos(treinos.data);
     }
@@ -99,15 +87,12 @@ export default function Home({ navigation }) {
           }}
         />
         <Welcome>
-          Bem vind{unidades.sexo === "F" ? "a" : "o"} {user.apelido}
+          Bem vind
+          {unidades.sexo === "F" ? "a" : "o"} {user.apelido}
         </Welcome>
         <Title>Seus Treinos</Title>
         {treinos.map(treino => (
-          <Treinos
-            key={treino.id}
-            navigation={navigation}
-            data={treino}
-          ></Treinos>
+          <Treinos key={treino.id} navigation={navigation} data={treino} />
         ))}
 
         {/* <VideoContainer>

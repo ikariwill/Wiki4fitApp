@@ -1,38 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+
+import Image from "react-native-remote-svg";
 
 import { Container, Title } from "./styles";
 
-import api from "../../services/api";
-
-export default function Sessoes({ navigation, id }) {
-  const [sessoes, setSessoes] = useState([]);
-
-  const loggedUser = navigation.getParam("user").data;
-  const options = {
-    headers: {
-      email: loggedUser.email,
-      senha: loggedUser.senha
-    }
-  };
-
-  useEffect(() => {
-    async function getSessoes(treinoId) {
-      const response = await api.get(
-        `/private/treinos/sessao/${treinoId}`,
-        options
-      );
-
-      setSessoes(response.data.data);
-    }
-
-    getSessoes(id);
-  }, []);
-
+export default function Sessoes({ navigation, data }) {
   return (
     <Container>
-      {sessoes.map(sessao => (
-        <Title key={sessao.id}>{sessao.nome}</Title>
-      ))}
+      <Title key={data.id}>{data.nome}</Title>
+      <Image
+        source={{
+          uri: `https://wiki4fit.com.br/${data.icone}`
+        }}
+        style={{ width: 50, height: 50 }}
+      />
     </Container>
   );
 }
