@@ -1,34 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { AsyncStorage, ScrollView, FlatList, View } from "react-native";
+import React, { useEffect, useState } from 'react';
+import { ScrollView } from 'react-native';
 
-import { Button, ButtonText } from "../Login/styles";
-import { Container, Title, List, Icon, Welcome } from "./styles";
+import AsyncStorage from '@react-native-community/async-storage';
 
-import api from "../../services/api";
+import * as Speech from 'expo-speech';
 
-import Novidades from "../../components/Novidades";
-import Treinos from "../../components/Treinos";
+import { Button, ButtonText } from '../Login/styles';
+import { Container, Title, List, Icon, Welcome } from './styles';
 
-export default function Home({ navigation }) {
+import api from '../../services/api';
+
+import Novidades from '../../components/Novidades';
+import Treinos from '../../components/Treinos';
+
+export default function Home({ route, navigation }) {
   const [user, setUser] = useState([]);
-  const [unidades, setUnidades] = useState([]);
-  const [treinos, setTreinos] = useState([]);
+  const [unidadeId, setUnidadeId] = useState(null);
+  const [training, setTraining] = useState([]);
   const [novidades, setNovidades] = useState([]);
-
-  const [userIcon, setUserIcon] = useState(
-    "https://wiki4fit.com.br/assets/global/img/boneco.png"
-  );
+  const [options] = useState({
+    headers: {
+      email: route.params.user.data.email,
+      senha: route.params.user.data.senha,
+    },
+  });
 
   useEffect(() => {
-    const loggedUser = navigation.getParam("user").data;
-    const options = {
-      headers: {
-        email: loggedUser.email,
-        senha: loggedUser.senha
-      }
-    };
+    async function getTraining() {
+      const response = await api.get(
+        `/private/treinos/usuario/${user.id}`,
+        options
+      );
 
-    async function getNews(unidadeId) {
+      setTraining(response.data.data);
+    }
+
+    getTraining();
+
+    console.log(user);
+  }, [user, options]);
+
+  useEffect(() => {
+    async function getNews() {
       const response = await api.get(
         `/private/novidades/unidade/${unidadeId}`,
         options
@@ -39,88 +52,69 @@ export default function Home({ navigation }) {
       setNovidades(news.data);
     }
 
-    async function getUnidades() {
-      const response = await api.get("/private/usuario/unidades", options);
-
-      const unidades = response.data;
-
-      setUserIcon(
-        `https://wiki4fit.com.br/assets/images/usuarios/${unidades.data[0].imagem_id}`
-      );
-
-      setUnidades(unidades.data[0]);
-
-      getTreinos(unidades.data[0].id);
-      getNews(unidades.data[0].cliente_unidade_id);
-    }
-
-    async function getTreinos(userId) {
-      const response = await api.get(
-        `/private/treinos/usuario/${userId}`,
-        options
-      );
-
-      const treinos = response.data;
-
-      setTreinos(treinos.data);
-    }
-
     getNews();
+  }, [unidadeId, options]);
+
+  useEffect(() => {
+    async function getUnidades() {
+      const response = await api.get('/private/usuario/unidades', options);
+
+      setUser(response.data.data[0]);
+
+      setUnidadeId(response.data.data[0].cliente_unidade_id);
+    }
 
     getUnidades();
-
-    setUser(loggedUser);
-  }, []);
+  }, [options]);
 
   async function handleLogout() {
-    await AsyncStorage.removeItem("@wiki4fit:user");
+    await AsyncStorage.removeItem('@wiki4fit:user');
 
-    navigation.navigate("Login");
+    navigation.navigate('Login');
   }
+
+  const speak = () => {
+    const thingToSay =
+      'Fiz uma promessa pra mim mesmo, nunca mais comer torresmo.';
+    Speech.speak(thingToSay, {
+      voices: 'pt-br-x-afs#male_3-local',
+    });
+  };
+
+  const getVoices = async () => {
+    const voices = JSON.stringify(await Speech.getAvailableVoicesAsync());
+
+    console.log(voices);
+  };
 
   return (
     <ScrollView>
       <Container>
+        <Button onPress={speak}>
+          <ButtonText>Falar</ButtonText>
+        </Button>
+        <Button onPress={getVoices}>
+          <ButtonText>Vozes</ButtonText>
+        </Button>
         <Icon
           source={{
-            uri: userIcon
+            uri: `https://wiki4fit.com.br/assets/images/usuarios/${user.imagem_id}`,
           }}
         />
         <Welcome>
           Bem vind
-          {unidades.sexo === "F" ? "a" : "o"} {user.apelido}
+          {user.sexo === 'F' ? 'a' : 'o'} {user.nome}
         </Welcome>
         <Title>Seus Treinos</Title>
-        {treinos.map(treino => (
-          <Treinos key={treino.id} navigation={navigation} data={treino} />
+        {training.map(treino => (
+          <Treinos key={treino.id} route={route} data={treino} />
         ))}
-
-        {/* <VideoContainer>
-          <VideoPlayer
-            videoProps={{
-              shouldPlay: true,
-              resizeMode: Video.RESIZE_MODE_CONTAIN,
-              source: {
-                uri: "https://wiki4fit.com.br/videos/1/536380.mp4"
-              }
-            }}
-            inFullscreen={true}
-            videoBackground="transparent"
-            height={250}
-            isLooping={true}
-            isMuted={true}
-            showFullscreenButton={true}
-          />
-        </VideoContainer> */}
-
         <Title>Feed</Title>
         <List
           keyboardShouldPersistTaps="handled"
           data={novidades}
           keyExtractor={item => String(item.id)}
-          renderItem={({ item }) => (
-            <Novidades navigation={navigation} data={item} />
-          )}
+          renderItem={({ item }) => <Novidades route={route} data={item} />}
         />
 
         <Button onPress={handleLogout}>

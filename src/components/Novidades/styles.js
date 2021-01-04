@@ -1,19 +1,19 @@
-import styled from "styled-components/native";
+import styled from 'styled-components/native';
 
 export const Container = styled.View`
-  padding: 0 0 10px 0;
+  padding: 3px 3px 10px 3px;
   border-radius: 4px;
   margin-bottom: 15px;
   background: #fff;
 `;
 
 export const Image = styled.Image.attrs({
-  resizeMode: "stretch"
+  resizeMode: 'cover',
 })`
-  max-height: 200px;
+  max-height: 225px;
   border-radius: 4px;
   width: 100%;
-  height: 200px;
+  height: 225px;
 `;
 
 export const Title = styled.Text`

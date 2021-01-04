@@ -1,4 +1,4 @@
-import styled from "styled-components/native";
+import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
@@ -20,7 +20,7 @@ export const Form = styled.View`
 `;
 
 export const Input = styled.TextInput.attrs({
-  placeholderTextColor: "#999"
+  placeholderTextColor: '#999',
 })`
   padding: 12px 15px;
   border-radius: 4px;

@@ -1,6 +1,6 @@
-import styled from "styled-components/native";
+import styled from 'styled-components/native';
 
-import { getStatusBarHeight } from "react-native-status-bar-height";
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 export const Container = styled.View`
   flex: 1;
@@ -32,9 +32,5 @@ export const Title = styled.Text`
 
 export const List = styled.FlatList.attrs({
   contentContainerStyle: { paddingHorizontal: 20 },
-  showsVerticalScrollIndicator: false
+  showsVerticalScrollIndicator: false,
 })``;
-
-export const VideoContainer = styled.View`
-  flex: 1;
-`;

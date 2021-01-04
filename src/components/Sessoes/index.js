@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 
-import Image from "react-native-remote-svg";
+import Image from 'react-native-remote-svg';
 
-import { Container, Title } from "./styles";
+import { Container, Title } from './styles';
 
-export default function Sessoes({ navigation, data }) {
+export default function Sessoes({ data }) {
   return (
     <Container>
       <Title key={data.id}>{data.nome}</Title>
       <Image
         source={{
-          uri: `https://wiki4fit.com.br/${data.icone}`
+          uri: `https://wiki4fit.com.br/${data.icone}`,
         }}
         style={{ width: 50, height: 50 }}
       />
