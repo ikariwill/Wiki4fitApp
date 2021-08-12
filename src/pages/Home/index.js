@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 
-import AsyncStorage from '@react-native-community/async-storage';
-
-import * as Speech from 'expo-speech';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Button, ButtonText } from '../Login/styles';
-import { Container, Title, List, Icon, Welcome } from './styles';
+import { Container, Title, List, Icon, ProfileName, Header } from './styles';
 
 import api from '../../services/api';
 
@@ -73,38 +71,19 @@ export default function Home({ route, navigation }) {
     navigation.navigate('Login');
   }
 
-  const speak = () => {
-    const thingToSay =
-      'Fiz uma promessa pra mim mesmo, nunca mais comer torresmo.';
-    Speech.speak(thingToSay, {
-      voices: 'pt-br-x-afs#male_3-local',
-    });
-  };
-
-  const getVoices = async () => {
-    const voices = JSON.stringify(await Speech.getAvailableVoicesAsync());
-
-    console.log(voices);
-  };
-
   return (
     <ScrollView>
       <Container>
-        <Button onPress={speak}>
-          <ButtonText>Falar</ButtonText>
-        </Button>
-        <Button onPress={getVoices}>
-          <ButtonText>Vozes</ButtonText>
-        </Button>
-        <Icon
-          source={{
-            uri: `https://wiki4fit.com.br/assets/images/usuarios/${user.imagem_id}`,
-          }}
-        />
-        <Welcome>
-          Bem vind
-          {user.sexo === 'F' ? 'a' : 'o'} {user.nome}
-        </Welcome>
+        <Header>
+          <ProfileName>
+            {user.nome} {user.sobrenome}
+          </ProfileName>
+          <Icon
+            source={{
+              uri: `https://wiki4fit.com.br/assets/images/usuarios/${user.imagem_id}`,
+            }}
+          />
+        </Header>
         <Title>Seus Treinos</Title>
         {training.map(treino => (
           <Treinos key={treino.id} route={route} data={treino} />

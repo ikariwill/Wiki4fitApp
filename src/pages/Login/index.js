@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import api from '../../services/api';
 
